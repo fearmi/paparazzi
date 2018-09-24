@@ -1,0 +1,14 @@
+<!DOCTYPE module SYSTEM "module.dtd">
+
+<module name="photogrammetryparam">
+  <doc>
+    <description>Generates Photogrammetry parrameters</description>
+  </doc>
+  <header>
+    <file name="photogrammetryparam.h"/>
+  </header>
+  <makefile>
+    <file name="photogrammetryparam.c"/>
+  </makefile>
+</module>
+

@@ -27,6 +27,7 @@
 #include "modules/guidance/gvf/trajectories/gvf_ellipse.h"
 #include "modules/guidance/gvf/trajectories/gvf_line.h"
 #include "modules/guidance/gvf/trajectories/gvf_sin.h"
+#include "modules/guidance/gvf/nav/nav_survey_polygon_gvf.h"
 
 #include "firmwares/fixedwing/nav.h"
 #include "subsystems/navigation/common_nav.h"
@@ -127,7 +128,9 @@ void gvf_init(void)
   gvf_control.kn = 1;
   gvf_control.s = 1;
   gvf_trajectory.type = NONE;
-
+//#if PHOTOGRAMMETRY
+  photogrammetry(4.75,2.8,1280,960,81,125,80,80,3.98,4.8);
+//#endif
 #if PERIODIC_TELEMETRY
   register_periodic_telemetry(DefaultPeriodic, PPRZ_MSG_ID_GVF, send_gvf);
   register_periodic_telemetry(DefaultPeriodic, PPRZ_MSG_ID_CIRCLE, send_circle);

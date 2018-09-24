@@ -29,6 +29,7 @@
 
   <variables>
     <variable var="angle_ps" init="0" min="-180" max="179" step="1"/>
+    <variable var="focus" init="0" min="0" max="20" step="1"/>
   </variables>
 
   <modules> 

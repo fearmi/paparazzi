@@ -1,0 +1,32 @@
+<!DOCTYPE module SYSTEM "module.dtd">
+ <module name="demo_module" dir="demo_module">
+  <doc>
+   <description>
+     Demo module.
+     More details about this module.
+   </description>
+   <configure name="SOMETHING" value="S1|S2|S3" description="The thing to use"/>
+   <define name="DEMO_MODULE_LED" value="LED_X" description="LED Selection"/>
+  </doc>
+  <settings>
+    <dl_settings name="bla">
+      <dl_setting min="0" max="5" step="1" var="bla_bla" shortname="bb"/>
+    </dl_settings>
+  <settings>
+  <depends>foo.xml,bar|baz</depends>
+  <conficts>boo</conflicts>
+  <header>
+   <file name="demo_module.h"/>
+  </header>
+  <init fun="init_demo()"/>
+  <periodic fun="periodic_1Hz_demo()" freq="1." start="start_demo()" stop="stop_demo()"/>
+  <periodic fun="periodic_10Hz_demo()" period="0.1" start="start_demo()" stop="stop_demo()"/>
+  <makefile>
+   <raw>
+    #Raw makefile section
+   </raw>
+   <define name="USE_SOMETHING" value="$(SOMETHING)"/>
+   <define name="DEMO_MODULE_LED" value="2"/>
+   <file name="demo_module.c"/>
+  </makefile>
+ </module>

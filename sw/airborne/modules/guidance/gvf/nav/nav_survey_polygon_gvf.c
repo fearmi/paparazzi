@@ -34,10 +34,25 @@
 #include "autopilot.h"
 #include "generated/flight_plan.h"
 #include "modules/guidance/gvf/gvf.h"
+#include "std.h"
+#include "stdio.h"
 
 #ifdef DIGITAL_CAM
 #include "modules/digital_cam/dc.h"
 #endif
+
+#ifndef PHOTOGRAMMETRY
+#define PHOTOGRAMMETRY 0
+#endif
+float Speed;
+float numberOfImage;
+float SpaceBLines;
+double numberOfLines;
+float Distance_Between_Photos;
+float Photos;
+float altitud;
+
+
 
 struct gvf_SurveyPolyAdv gvf_survey;
 
@@ -251,16 +266,17 @@ bool gvf_nav_survey_polygon_run(void)
 
   //entry circle around entry-center until the desired altitude is reached
   if (gvf_survey.stage == gENTRY) {
-    gvf_nav_direction_circle(gvf_survey.psa_min_rad);
-    gvf_ellipse_XY(gvf_survey.entry_center.x, gvf_survey.entry_center.y, gvf_survey.psa_min_rad, gvf_survey.psa_min_rad, 0);
+    gvf_nav_direction_circle(gvf_survey.psa_min_rad);// if psa_min_rad is negative planes changes direcction.
+    gvf_ellipse_XY(gvf_survey.entry_center.x, gvf_survey.entry_center.y, gvf_survey.psa_min_rad, gvf_survey.psa_min_rad, 0);//execute a circle in the point x,y with a min_rad radius.
     if (NavCourseCloseTo(gvf_survey.segment_angle)
         && nav_approaching_xy(gvf_survey.seg_start.x, gvf_survey.seg_start.y, last_x, last_y, CARROT)
-        && fabs(stateGetPositionUtm_f()->alt - gvf_survey.psa_altitude) <= 20) {
+        && fabs(stateGetPositionUtm_f()->alt - gvf_survey.psa_altitude) <= 20) {// frist it checks if the navigation course to segment angle && it close to the start of the start of the segment
       gvf_survey.stage = gSEG;
       nav_init_stage();
+      takePhoto();
 #ifdef DIGITAL_CAM
       dc_survey(gvf_survey.psa_shot_dist, gvf_survey.seg_start.x - gvf_survey.dir_vec.x * gvf_survey.psa_shot_dist * 0.5,
-                gvf_survey.seg_start.y - gvf_survey.dir_vec.y * gvf_survey.psa_shot_dist * 0.5);
+                gvf_survey.seg_start.y - gvf_survey.dir_vec.y * gvf_survey.psa_shot_dist * 0.5);//dc_survey(interval,x,y)
 #endif
     }
   }
@@ -318,12 +334,46 @@ bool gvf_nav_survey_polygon_run(void)
     if (NavCourseCloseTo(gvf_survey.segment_angle)) {
       gvf_survey.stage = gSEG;
       nav_init_stage();
+      takePhoto();
 #ifdef DIGITAL_CAM
       dc_survey(gvf_survey.psa_shot_dist, gvf_survey.seg_start.x - gvf_survey.dir_vec.x * gvf_survey.psa_shot_dist * 0.5,
                 gvf_survey.seg_start.y - gvf_survey.dir_vec.y * gvf_survey.psa_shot_dist * 0.5);
+	
 #endif
     }
   }
 
   return true;
+}
+
+
+void photogrammetry(float GSD,float Speed,float ImageWidthP,float ImageHeigthP,float SideOverlap,float Area_Y,float FrontOverlap,float Area_X,float Flength,float sensor_width){
+	
+	float Cspeed;
+	float ImageWM;
+	float ImageHm;
+
+	
+	Cspeed = (GSD*0.01/2)/Speed;
+	ImageWM = GSD*ImageWidthP/100;
+	ImageHm = GSD*ImageHeigthP/100;
+	SpaceBLines = ImageWM*(100-SideOverlap)/100;
+	numberOfLines =Area_Y/SpaceBLines;
+	Distance_Between_Photos =ImageHm*(100-FrontOverlap)/100 ;
+	Photos =Area_X/Distance_Between_Photos;
+	altitud = (GSD*Flength*ImageWidthP)/(sensor_width*100);
+
+
+	printf("%s,%f \n","Camera shutter sppe: ",Cspeed);
+	printf("%s,%f \n","Foot print Width ",ImageWM);
+	printf("%s,%f \n","Foot print Height ",ImageHm);
+	printf("%s,%f \n","Space Between lines ",SpaceBLines);
+	printf("%s,%f \n","Numbers of lines ",numberOfLines);
+	printf("%s,%f \n","Distance Between photos " ,Distance_Between_Photos);
+	printf("%s,%f \n","Number of photos per line" ,Photos);
+	printf("%s,%f \n","Altitud" ,altitud);
+}
+
+void takePhoto(){
+printf("%s","photo\n");
 }

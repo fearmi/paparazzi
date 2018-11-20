@@ -84,12 +84,10 @@ struct gvf_SurveyPolyAdv {
   struct FloatVect2 ret_end;
 };
 
-void photogrammetry(float GSD,float Speed,float ImageWidthP,float ImageHeigthP,float SideOverlap,float Area_Y,float FrontOverlap,float Area_X,float Flength,float sensor_width);
+void photogrammetry(float GSD,float ImageWidthP,float ImageHeigthP,float SideOverlap,float Area_Y,float FrontOverlap,float Area_X,float Flength,float sensor_width);
 
-extern void gvf_nav_survey_polygon_setup(uint8_t first_wp, uint8_t size, float angle, float sweep_width, float shot_dist,
-                                     float min_rad, float altitude);
-void takePhoto();
-
+extern void gvf_nav_survey_polygon_setup(uint8_t first_wp, uint8_t size, float angle, 
+                                     float min_rad);
 void gvf_nav_direction_circle(float rad);
 extern bool gvf_nav_survey_polygon_run(void);
 

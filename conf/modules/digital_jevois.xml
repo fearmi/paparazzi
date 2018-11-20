@@ -1,0 +1,14 @@
+<!DOCTYPE module SYSTEM "module.dtd">
+
+<module name="digital_jevois">
+  <doc>
+    <description>This module interfaces dc.c funtion to work with jevois camera</description>
+  </doc>
+  <header>
+    <file name="digital_jevois.h"/>
+  </header>
+  <makefile>
+    <file name="digital_jevois.c"/>
+  </makefile>
+</module>
+

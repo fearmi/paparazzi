@@ -59,6 +59,8 @@
 #define JEVOIS_VFOV (3*JEVOIS_HFOV/4)
 #endif
 
+#include "modules/digital_cam/dc.h"
+
 extern void jevois_init(void);
 extern void jevois_event(void);
 
@@ -77,6 +79,12 @@ extern void jevois_setmapping(int number);
 
 // dummy variable to change mapping from setting
 extern int jevois_mapping_setting;
+extern void jevois_sendCustomMessage(char *message);
+extern void jevois_periodic(void);
+extern void JeVois_send(void);
+extern void JeVois_setting(void);
+extern void JeVois_stopRecording(void);
+extern void JeVois_Photo_Periodic(void);
 
 #endif
 

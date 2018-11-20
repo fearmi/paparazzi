@@ -12,12 +12,11 @@
     <waypoint name="_BASELEG" x="168.8" y="-13.8"/>
     <waypoint name="CLIMB" x="-114.5" y="162.3"/>
     <waypoint alt="235.0" name="ELLIPSE" x="0.5" y="109.0"/>
-    <waypoint alt="235.0" name="S1" x="-14.8" y="157.8"/>
-    <waypoint alt="235.0" name="S2" x="175.7" y="85.2"/>
-    <waypoint alt="235.0" name="S3" x="140.0" y="-2.3"/>
-    <waypoint alt="235.0" name="S4" x="-49.6" y="66.3"/>
+    <waypoint alt="235.0" name="S1" x="11.7" y="146.7"/>
+    <waypoint alt="235.0" name="S2" x="117.0" y="104.0"/>
+    <waypoint alt="235.0" name="S3" x="96.1" y="22.0"/>
+    <waypoint alt="235.0" name="S4" x="-11.1" y="64.8"/>
   </waypoints>
-
   <sectors>
     <sector color="orange" name="Survey">
       <corner name="S1"/>
@@ -26,16 +25,13 @@
       <corner name="S4"/>
     </sector>
   </sectors>
-
   <variables>
-    <variable var="angle_ps" init="0" min="-180" max="179" step="1"/>
-    <variable var="focus" init="0" min="0" max="20" step="1"/>
+    <variable init="0" max="179" min="-180" step="1" var="angle_ps"/>
+    <variable init="0" max="20" min="0" step="1" var="focus"/>
   </variables>
-
-  <modules> 
+  <modules>
     <module name="gvf_module"/>
   </modules>
-
   <blocks>
     <block name="Wait GPS">
       <set value="1" var="autopilot.kill_throttle"/>
@@ -73,10 +69,10 @@
       <call fun="gvf_line_wp_heading(WP_ELLIPSE, gvf_line_par.heading)"/>
     </block>
     <block name="Sinusoidal">
-    <call fun="gvf_sin_wp_alpha(WP_ELLIPSE, gvf_sin_par.alpha, gvf_sin_par.w, gvf_sin_par.off, gvf_sin_par.A)"/>
+      <call fun="gvf_sin_wp_alpha(WP_ELLIPSE, gvf_sin_par.alpha, gvf_sin_par.w, gvf_sin_par.off, gvf_sin_par.A)"/>
     </block>
     <block name="Poly Survey">
-      <call_once fun="gvf_nav_survey_polygon_setup(WP_S1, 4, angle_ps, 30, 30, 40, flight_altitude)"/>
+      <call_once fun="gvf_nav_survey_polygon_setup(WP_S1, 4,90, 30, 30, 40, flight_altitude)"/>
       <call fun="gvf_nav_survey_polygon_run()"/>
     </block>
     <block group="land" name="Land Right AF-TD" strip_button="Land right (wp AF-TD)" strip_icon="land-right.png">

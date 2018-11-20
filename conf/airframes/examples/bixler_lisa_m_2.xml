@@ -38,6 +38,11 @@
   </firmware>
 
   <modules>
+    <load name="digital_cam_uart.xml">
+      <define name="DC_AUTOSHOOT_PERIOD" value="0.5" />
+      <define name="DC_AUTOSHOOT_DISTANCE_INTERVAL" value="50" />
+      <define name="DC_SHOT_SYNC_SEND" value="TRUE|FALSE" />
+    </load>
     <module name="nav" type="line"/>
   </modules>
 

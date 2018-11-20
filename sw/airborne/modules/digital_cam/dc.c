@@ -33,6 +33,7 @@
  */
 
 #include "dc.h"
+#include "stdio.h"
 
 // for waypoints, include correct header until we have unified API
 #ifdef AP
@@ -77,6 +78,7 @@ float dc_gps_y = 0;
 static struct FloatVect2 last_shot_pos = {0.0, 0.0};
 float dc_distance_interval;
 float dc_autoshoot_period;
+int n=1;
 
 /** by default send DC_SHOT message when photo was taken */
 #ifndef DC_SHOT_SYNC_SEND
@@ -309,6 +311,12 @@ void dc_periodic(void)
         dc_gps_next_dist += dc_survey_interval;
         dc_gps_count++;
         dc_send_command(DC_SHOOT);
+#ifdef SITL
+	printf("%s","photo");
+	printf ("%d",n);
+	printf ("%s","\n");
+	n=n+1;
+#endif
       }
     }
     break;

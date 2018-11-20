@@ -15,13 +15,17 @@
       <dl_settings NAME="JeVois">
         <dl_setting MAX="20" MIN="0" STEP="1" VAR="jevois_mapping_setting" shortname="mapping" module="modules/sensors/cameras/jevois" handler="setmapping"/>
         <dl_setting MAX="1" MIN="0" STEP="1" VAR="jevois_stream_setting" shortname="stream" module="modules/sensors/cameras/jevois" handler="stream" values="FALSE|TRUE"/>
+        
       </dl_settings>
     </dl_settings>
   </settings>
   <header>
     <file name="jevois.h"/>
+    <file name="../../digital_cam/dc.h"/>
   </header>
   <init fun="jevois_init()"/>
+  <periodic fun="jevois_periodic()" freq="10" autorun="TRUE"/>
+  <!--periodic fun="JeVois_Photo_Periodic()" freq="1" autorun="TRUE"/-->
   <event fun="jevois_event()"/>
   <makefile>
     <configure name="JEVOIS_UART" case="upper|lower"/>
@@ -31,5 +35,9 @@
     <define name="JEVOIS_DEV" value="$(JEVOIS_UART_LOWER)"/>
     <define name="$(JEVOIS_UART_UPPER)_BAUD" value="$(JEVOIS_BAUD)"/>
   </makefile>
+  <makefile target="ap|sim|nps">
+    <define name="DIGITAL_CAM" />
+    <file name="../../digital_cam/dc.c"/>
+   </makefile>
 </module>
 

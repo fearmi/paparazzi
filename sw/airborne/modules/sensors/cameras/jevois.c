@@ -26,11 +26,17 @@
 #include "modules/sensors/cameras/jevois.h"
 
 #include "std.h"
+#include "stdio.h"
 #include "mcu_periph/uart.h"
 #include "subsystems/abi.h"
 #include "math/pprz_algebra_float.h"
 #include <stdio.h>
+#include "modules/digital_cam/dc.h"
+#include <stdlib.h>
+#include "mcu_periph/sys_time_arch.h"
 
+
+bool jevois_init_map = FALSE;
 int jevois_mapping_setting;
 bool jevois_stream_setting;
 
@@ -79,9 +85,14 @@ struct jevois_t jevois;
 // initialization
 void jevois_init(void)
 {
+#ifndef SITL
+#ifdef DIGITAL_CAM
+  dc_init();
+#endif
+#endif
   // dummy settings
   jevois_mapping_setting = 0;
-  jevois_stream_setting = false;
+  jevois_stream_setting = FALSE;
 
   jevois.state = JV_SYNC;
   jevois.idx = 0;
@@ -319,23 +330,29 @@ static void jevois_parse(struct jevois_t *jv, char c)
 
 
 // UART polling function
+
 void jevois_event(void)
 {
-  // Look for data on serial link and send to parser
+#ifndef SITL  // Look for data on serial link and send to parser
   while (uart_char_available(&(JEVOIS_DEV))) {
     uint8_t ch = uart_getch(&(JEVOIS_DEV));
     jevois_parse(&jevois, ch);
   }
+#endif
 }
 
 // utility function to send a string
 static void send_string(char *s)
 {
+#ifdef SITL
+  s = s;
+#else
   uint8_t i = 0;
   while (s[i]) {
     uart_put_byte(&(JEVOIS_DEV), 0, (uint8_t)(s[i]));
     i++;
   }
+#endif
 }
 
 void jevois_stream(bool activate)
@@ -354,9 +371,104 @@ void jevois_setmapping(int number)
   jevois_stream(false);
   send_string("setmapping ");
   char s[4];
-  itoa(number, s, 10);
+  sprintf(s, "%d", number);
   send_string(s);
   send_string("\r\n");
   jevois_stream(true);
+}
+
+void jevois_sendCustomMessage(char *message){
+  send_string(message);
+}
+
+void dc_send_command(uint8_t cmd)
+{	
+  switch (cmd) {
+    case DC_SHOOT:
+      // Send Photo Position To Camera
+      /*
+      dc_shot_msg.data.nr = dc_photo_nr + 1;
+      dc_shot_msg.data.lat = stateGetPositionLla_i()->lat;
+      dc_shot_msg.data.lon = stateGetPositionLla_i()->lon;
+      dc_shot_msg.data.alt = stateGetPositionLla_i()->alt;
+      dc_shot_msg.data.phi = stateGetNedToBodyEulers_i()->phi;
+      dc_shot_msg.data.theta = stateGetNedToBodyEulers_i()->theta;
+      dc_shot_msg.data.psi = stateGetNedToBodyEulers_i()->psi;
+      dc_shot_msg.data.vground = stateGetHorizontalSpeedNorm_i();
+      dc_shot_msg.data.course = stateGetHorizontalSpeedDir_i();
+      dc_shot_msg.data.groundalt = POS_BFP_OF_REAL(state.alt_agl_f);
+      */
+      printf("%s","Amit");
+      send_string("p\r\n");
+      
+      break;
+    case DC_TALLER:
+      break;
+    case DC_WIDER:
+      break;
+    case DC_ON:
+      break;
+    case DC_OFF:
+      break;
+    default:
+      break;
+  }
+}
+void jevois_periodic()
+{
+  // Common DC Periodic task
+  dc_periodic();
+}
+extern void JeVois_send()
+{
+send_string("p\r\n");
+}
+
+extern void JeVois_setting()
+{
+/*/
+send_string("setmapping2 YUYV 1280 1024 15 Photogrametry PhotoTriger\r\n");
+send_string("streamon\r\n");
+*/
+
+send_string("setmapping2 YUYV 1280 1024 15 JeVois SaveVideo\r\n");
+send_string("streamon\r\n");
+send_string("start\r\n");
+
+}
+
+extern void JeVois_stopRecording()
+{
+
+send_string("stop\r\n");
+
+send_string("streamoff\r\n");
+send_string("sync\r\n");
+}
+
+extern void JeVois_Photo_Periodic()
+{
+if (get_sys_time_msec() < 7500 ) 
+    {
+     jevois_init_map = FALSE;
+     }
+if ((get_sys_time_msec() > 7500) & (get_sys_time_msec() <30000))
+   {
+    if (jevois_init_map == FALSE)
+      {
+      JeVois_setting();
+      jevois_init_map = TRUE;
+      }
+    else {
+      //JeVois_send();
+    }
+   } 
+if((get_sys_time_msec() > 30000 )&( get_sys_time_msec() < 90005))
+   {
+   jevois_init_map = FALSE;
+   JeVois_stopRecording();
+   }
+if ( get_sys_time_msec() > 90005){
+}
 }
 

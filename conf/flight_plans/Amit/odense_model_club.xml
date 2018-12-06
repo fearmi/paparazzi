@@ -11,10 +11,10 @@
     <waypoint name="E" x="-23.8" y="253.2"/>
     <waypoint name="S" x="-10.6" y="83.1"/>
     <waypoint name="STDBY" x="-18.5" y="155.7"/>
-    <waypoint name="A1" x="-90" y="188.2"/>
-    <waypoint name="A2" x="-90" y="57.7"/>
-    <waypoint name="A3" x="-49.4" y="60.2"/>
-    <waypoint name="A4" x="-49.4" y="190.6"/>    
+    <waypoint name="A1" x="-119.8" y="142.0"/>
+    <waypoint name="A2" x="-112.1" y="-5.0"/>
+    <waypoint name="A3" x="-37.5" y="0.6"/>
+    <waypoint name="A4" x="-30.9" y="149.9"/>
     <waypoint name="S5" x="34.4" y="57.7"/>
     <waypoint name="S6" x="31.3" y="188.2"/>
     <waypoint name="S7" x="79.4" y="190.6"/>

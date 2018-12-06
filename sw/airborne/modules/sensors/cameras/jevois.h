@@ -85,6 +85,6 @@ extern void JeVois_send(void);
 extern void JeVois_setting(void);
 extern void JeVois_stopRecording(void);
 extern void JeVois_Photo_Periodic(void);
-
+extern void JeVois_Reset_Param(void);
 #endif
 

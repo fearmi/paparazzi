@@ -21,9 +21,6 @@
       <!--configure name="MODEM_PORT_OUT" value="4244"/>
       <configure name="MODEM_PORT_IN" value="4245"/-->
     </target>
-
-    <module name="telemetry" type="xbee_api"/>
-
     <module name="imu" type="apogee">
       <define name="IMU_APOGEE_CHAN_X" value="1"/>      
       <define name="IMU_APOGEE_CHAN_Y" value="0"/>
@@ -35,14 +32,17 @@
     <module name="navigation"/>
     <!--module name="takeoff_detect"/-->
 
-    <!--module name="tlsf"/>
+    <!-- Communication -->
+    <module name="telemetry" type="xbee_api"/>
+    <module name="tlsf"/>
     <module name="pprzlog"/>
     <module name="logger" type="sd_chibios"/>
-    <module name="flight_recorder"/-->
+    <module name="flight_recorder"/>
+    <!--module name="mf_ptu"/-->
 
-	<module name="gps_ubx_ucenter">
+   <module name="gps_ubx_ucenter">
 		<define name="GPS_BAUD" value="115200"/>
-	</module>
+   </module>
     <module name="gps" type="ublox">
       <configure name="GPS_BAUD" value="B115200"/>
     </module>

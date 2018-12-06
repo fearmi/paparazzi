@@ -964,7 +964,7 @@ static msg_t thdSdLog(void *arg)
               f_sync(fo);
             } else { // close
               if (fileDes[lm->op.fd].tagAtClose) {
-                f_write(fo, "\r\nEND_OF_LOG\r\n", 14, &bw);
+                f_write(fo, "\r\n1234567890\r\n", 14, &bw);
                 nbBytesWritten += bw;
               }
               f_close(fo);

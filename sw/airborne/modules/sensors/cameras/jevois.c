@@ -35,6 +35,18 @@
 #include <stdlib.h>
 #include "mcu_periph/sys_time_arch.h"
 
+#ifndef SITL
+#if DIGITAL_CAM
+#include "state.h"
+#include "modules/loggers/sdlog_chibios.h"
+#include "subsystems/gps.h"
+#include "modules/loggers/sdlog_chibios/sdLog.h"
+#include "math/pprz_geodetic_int.h"
+bool log_Position_started;
+int image;
+struct EnuCoor_i pos;
+#endif
+#endif
 
 bool jevois_init_map = FALSE;
 int jevois_mapping_setting;
@@ -385,21 +397,9 @@ void dc_send_command(uint8_t cmd)
 {	
   switch (cmd) {
     case DC_SHOOT:
-      // Send Photo Position To Camera
-      /*
-      dc_shot_msg.data.nr = dc_photo_nr + 1;
-      dc_shot_msg.data.lat = stateGetPositionLla_i()->lat;
-      dc_shot_msg.data.lon = stateGetPositionLla_i()->lon;
-      dc_shot_msg.data.alt = stateGetPositionLla_i()->alt;
-      dc_shot_msg.data.phi = stateGetNedToBodyEulers_i()->phi;
-      dc_shot_msg.data.theta = stateGetNedToBodyEulers_i()->theta;
-      dc_shot_msg.data.psi = stateGetNedToBodyEulers_i()->psi;
-      dc_shot_msg.data.vground = stateGetHorizontalSpeedNorm_i();
-      dc_shot_msg.data.course = stateGetHorizontalSpeedDir_i();
-      dc_shot_msg.data.groundalt = POS_BFP_OF_REAL(state.alt_agl_f);
-      */
-      printf("%s","Amit");
-      send_string("p\r\n");
+
+
+      JeVois_send();
       
       break;
     case DC_TALLER:
@@ -421,38 +421,53 @@ void jevois_periodic()
 }
 extern void JeVois_send()
 {
-send_string("p\r\n");
+char str[4000];
+#ifndef SITL
+/*x = stateGetPositionEnu_f()->x;
+y = stateGetPositionEnu_f()->y;
+z = stateGetPositionEnu_f()->z;*/
+int x =  gps.lla_pos.lat;
+int y = gps.lla_pos.lon;
+int z =gps.lla_pos.alt;
+float pitch = stateGetNedToBodyEulers_f()->theta;
+float roll = stateGetNedToBodyEulers_f()->phi;
+float yaw =  stateGetNedToBodyEulers_f()->psi;;
+sprintf(str, "p,%d,%d,%d,%f,%f,%f\r\n",x,y,z,pitch,roll,yaw);
+send_string(str);
+#endif
+
+
 }
 
 extern void JeVois_setting()
 {
-/*/
+
 send_string("setmapping2 YUYV 1280 1024 15 Photogrametry PhotoTriger\r\n");
 send_string("streamon\r\n");
-*/
-
+send_string("o\r\n");
+/*
 send_string("setmapping2 YUYV 1280 1024 15 JeVois SaveVideo\r\n");
 send_string("streamon\r\n");
-send_string("start\r\n");
+send_string("start\r\n");*/
 
 }
 
 extern void JeVois_stopRecording()
 {
 
-send_string("stop\r\n");
-
+//send_string("stop\r\n");
+send_string("c\r\n");
 send_string("streamoff\r\n");
 send_string("sync\r\n");
 }
 
 extern void JeVois_Photo_Periodic()
 {
-if (get_sys_time_msec() < 7500 ) 
+if (get_sys_time_msec() < 10000 ) 
     {
      jevois_init_map = FALSE;
      }
-if ((get_sys_time_msec() > 7500) & (get_sys_time_msec() <30000))
+if ((get_sys_time_msec() > 10000) & (get_sys_time_msec() <50000))
    {
     if (jevois_init_map == FALSE)
       {
@@ -460,15 +475,24 @@ if ((get_sys_time_msec() > 7500) & (get_sys_time_msec() <30000))
       jevois_init_map = TRUE;
       }
     else {
-      //JeVois_send();
+     JeVois_send();
     }
    } 
-if((get_sys_time_msec() > 30000 )&( get_sys_time_msec() < 90005))
+if((get_sys_time_msec() > 50000 )&( get_sys_time_msec() < 54000))
    {
    jevois_init_map = FALSE;
    JeVois_stopRecording();
+   JeVois_Reset_Param();
    }
-if ( get_sys_time_msec() > 90005){
+if((get_sys_time_msec() > 54000 )&( get_sys_time_msec() < 82000))
+   {
+   jevois_init_map = FALSE;
+   JeVois_stopRecording();
 }
 }
 
+
+extern void JeVois_Reset_Param()
+{
+send_string("r\r\n");
+}

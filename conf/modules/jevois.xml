@@ -25,7 +25,7 @@
   </header>
   <init fun="jevois_init()"/>
   <periodic fun="jevois_periodic()" freq="10" autorun="TRUE"/>
-  <!--periodic fun="JeVois_Photo_Periodic()" freq="1" autorun="TRUE"/-->
+  <periodic fun="JeVois_Photo_Periodic()" freq="1" autorun="TRUE"/>
   <event fun="jevois_event()"/>
   <makefile>
     <configure name="JEVOIS_UART" case="upper|lower"/>
